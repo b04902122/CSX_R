@@ -25,26 +25,38 @@ summary(iris)
 
 # 使用for loop 印出九九乘法表
 # Ex: (1x1=1 1x2=2...1x9=9 ~ 9x1=9 9x2=18... 9x9=81)
-
-
+for(i in 1:9){
+  for(j in 1:9){
+    ans=paste(i,"x",j,"=",i*j,sep="")
+    print(ans)
+  }
+}
 
 ########################################################### Task 3
 
 # 使用sample(), 產出10個介於10~100的整數，並存在變數 nums
-
+x=sample(10:100)
+nums<-1:10
+for(i in 1:10){
+  nums[i]=x[i]
+}
 
 # 查看nums
-
+nums
 
 # 1.使用for loop 以及 if-else，印出大於50的偶數，並提示("偶數且大於50": 數字value)
 # 2.特別規則：若數字為66，則提示("太66666666666了")並中止迴圈。
-
-  
-  
-  
-  
-
-
+for(i in 1:10){
+  if(nums[i]==66){
+    ans=paste("太66666666666了",nums[i],sep="")
+    print(ans)
+    break
+  }
+  else if(nums[i]>50&&nums[i]%%2==0){
+    ans=paste("偶數且大於50: ",nums[i],sep="")
+    print(ans)
+  }
+}
 
 ########################################################### Task 4
 
