@@ -7,7 +7,7 @@
 請大家多多指教！
 
 
-# WEEK 1
+# week 1
 
 建立github帳號與repository
 
