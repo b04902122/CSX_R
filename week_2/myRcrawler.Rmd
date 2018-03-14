@@ -4,7 +4,7 @@ author: "Ymc"
 date: "2018/03/14"
 output: html_document
 ---
-###my site
+my site: https://b04902122.github.io/CSX_R/week_2/myRcrawler.html
   
   ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
