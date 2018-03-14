@@ -1,23 +1,23 @@
 ---
-title: "RCrawler"
-author: "Pecu"
-date: "2018年3月2日"
+title: "CSX_R homework 2"
+author: "Ymc"
+date: "2018/03/14"
 output: html_document
 ---
-
-```{r setup, include=FALSE}
+  
+  ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## RCrawler
+## IKEA-RCrawler
 
 ```{r RCrawler}
 library(httr)
 
-url <- "https://api.courtsite.my/search?address=Petaling%20Jaya,%20Selangor,%20Malaysia"
+url <- "https://ww8.ikea.com/ext/iplugins/en_US/data/local-stores/data.json"
 res = GET(url)
 res_json = content(res)
-raw = (data.frame(do.call(rbind,res_json$prods)))
+raw = (data.frame(do.call(rbind,res_json)))
 ```
 
 ## Show Results
