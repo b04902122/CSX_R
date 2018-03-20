@@ -44,8 +44,20 @@ ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
   geom_line()
 ```
 
-## line chart
+## histogram chart
 ```{r}
 ggplot(data = iris, aes(x = Sepal.Length)) +
 geom_histogram(fill="black", color="white")
+```
+
+## frequency polygons chart
+```{r}
+ggplot(iris, aes(x=Petal.Length, colour = "variable")) +
+  geom_freqpoly()
+```
+
+## boxplot chart
+```{r}
+ggplot(iris, aes(x=Petal.Length, y=Species)) +
+geom_boxplot()
 ```
