@@ -14,16 +14,38 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(ggplot2)
-
-url <- "https://ww8.ikea.com/ext/iplugins/en_US/data/local-stores/data.json"
-res = GET(url)
-res_json = content(res)
-raw = (data.frame(do.call(rbind,res_json)))
 ```
 
-## Show Results
+## bar chart
+```{r}
+ggplot(data=iris, aes(x=Species, y=Sepal.Length, fill=Species)) +
+    geom_bar(stat="identity") +
+    guides(fill=FALSE)
+```
 
-```{r Table}
-library(knitr)
-kable(raw)
+## pie chart
+```{r}
+ggplot(data = iris,
+  aes(x = factor(""), fill = Species) ) +
+  geom_bar() +
+  coord_polar(theta = "y") +
+  scale_x_discrete("")
+```
+
+## scatter chart
+```{r}
+ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
+  geom_point()
+```
+
+## line chart
+```{r}
+ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
+  geom_line()
+```
+
+## line chart
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) +
+geom_histogram(fill="black", color="white")
 ```
