@@ -1,1 +1,29 @@
+---
+title: "CSX_R homework 3"
+author: "Ymc"
+date: "2018/03/20"
+output: html_document
+---
+my site: https://b04902122.github.io/CSX_R/week_3/ggplot2.html
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
+## ggplot2
+
+```{r}
+library(ggplot2)
+
+url <- "https://ww8.ikea.com/ext/iplugins/en_US/data/local-stores/data.json"
+res = GET(url)
+res_json = content(res)
+raw = (data.frame(do.call(rbind,res_json)))
+```
+
+## Show Results
+
+```{r Table}
+library(knitr)
+kable(raw)
+```
