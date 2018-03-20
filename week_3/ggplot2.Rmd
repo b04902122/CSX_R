@@ -34,30 +34,46 @@ ggplot(data = iris,
 
 ## scatter chart
 ```{r}
-ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
+ggplot(iris, aes(Sepal.Length, Sepal.Width, color=Species)) +
   geom_point()
+```
+
+## scatter with trend line chart
+```{r}
+ggplot(data=iris,aes(x=Sepal.Width, y=Sepal.Length,color=Species)) + geom_point() +geom_smooth(se=FALSE)+
+ theme_minimal()
 ```
 
 ## line chart
 ```{r}
-ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
+ggplot(iris, aes(Sepal.Length, Sepal.Width, color=Species)) +
   geom_line()
 ```
 
 ## histogram chart
 ```{r}
-ggplot(data = iris, aes(x = Sepal.Length)) +
-geom_histogram(fill="black", color="white")
+ggplot(data = iris, aes(x = Sepal.Length,color=Species)) +
+geom_histogram()
 ```
 
 ## frequency polygons chart
 ```{r}
-ggplot(iris, aes(x=Petal.Length, colour = "variable")) +
+ggplot(iris, aes(x=Petal.Length, color=Species)) +
   geom_freqpoly()
 ```
 
 ## boxplot chart
 ```{r}
-ggplot(iris, aes(x=Petal.Length, y=Species)) +
+ggplot(iris, aes(x=Petal.Length, y=Petal.Width, color=Species)) +
 geom_boxplot()
+```
+
+## density curve chart
+```{r}
+ggplot(data=iris,aes(x=Sepal.Length,color=Species)) + geom_density() +theme_minimal()
+```
+
+## density2d curve chart
+```{r}
+ggplot(data=iris,aes(x=Petal.Width,y=Petal.Length,color=Species)) +geom_density2d()+ theme_minimal()
 ```
