@@ -4,7 +4,7 @@ author: "Ymc"
 date: "2018/04/04"
 output: html_document
 ---
-my site: https://b04902122.github.io/CSX_R/week_3/ggplot2.html
+my site: https://b04902122.github.io/CSX_R/week_4/facebookAPI.html
   
   ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
