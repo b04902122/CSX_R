@@ -18,13 +18,38 @@ library("RCurl")
 library("tm")
 library("rjson")
 library("httr")
+library("wordcloud")
 ```
 
 ## get random facebook post's comments
+### (Showed only 25 comments)
 ```{r}
-url <- "https://graph.facebook.com/v2.12/353815521771632/comments?access_token=EAACEdEose0cBABe81zAzppjKdF1Blxwr4l7sMsB1baz0zWs9pSgumZAfT9nsCDlJxm3ySrmQrjoZA8OT4kjeIhG5pnRDbFkfylqre6LguQHn9RFmuJxJTTrLP4PVr31ZCSvbkKuAvzkpLOToykjtIgslozyZAZA6kw8XTBtdzFneiQpkeFL1xAV0XBO6wRNtKfelToDE1sgZDZD&pretty=0&limit=25&after=WTI5dGJXVnVkRjlqZAFhKemIzSTZANelUwT0RFeU1Ua3hOamN4T1RZAMU9qRTFNakkxT0RrME5EZAz0ZD"
+url <- "https://graph.facebook.com/v2.12/481716732028912/comments?access_token=EAACEdEose0cBABe81zAzppjKdF1Blxwr4l7sMsB1baz0zWs9pSgumZAfT9nsCDlJxm3ySrmQrjoZA8OT4kjeIhG5pnRDbFkfylqre6LguQHn9RFmuJxJTTrLP4PVr31ZCSvbkKuAvzkpLOToykjtIgslozyZAZA6kw8XTBtdzFneiQpkeFL1xAV0XBO6wRNtKfelToDE1sgZDZD&pretty=0&limit=25&after=NDU4NwZDZD"
 d <- getURL(url)
 j <- fromJSON(d)
 comments <-sapply(j$data,function(j) {list(comment=j$message)})
 comments
+```
+## get all words from comments
+```{r}
+Cleanedcomments <- sapply(comments, function(x) iconv(enc2utf8(x), sub = "byte"))
+my_corpus <- Corpus(VectorSource(Cleanedcomments))
+my_function <- content_transformer(function (x, pattern) gsub(pattern, " ", x))
+my_cleaned_corpus <- tm_map(my_corpus, my_function, "/")
+my_cleaned_corpus <- tm_map(my_cleaned_corpus, my_function, "@")
+my_cleaned_corpus <- tm_map(my_cleaned_corpus, my_function, "\\|")
+my_cleaned_corpus <- tm_map(my_cleaned_corpus, content_transformer(tolower))
+#my_cleaned_corpus <- tm_map(my_cleaned_corpus, removeWords, c(stopwords("english"), "batman","movie","superman"))
+my_cleaned_corpus <- tm_map(my_cleaned_corpus, removePunctuation)
+my_cleaned_corpus <- tm_map(my_cleaned_corpus, stripWhitespace)
+
+my_tdm <- TermDocumentMatrix(my_cleaned_corpus)
+m <- as.matrix(my_tdm)
+words <- sort(rowSums(m), decreasing = TRUE)
+my_data <- data.frame(word = names(words), freq=words)
+my_data
+```
+## word cloud
+```{r}
+wordcloud(words = my_data$word, freq = my_data$freq, min.freq = 2, max.words = 100, random.order=FALSE, rot.per = 0.35, colors = brewer.pal(8, "Dark2"))
 ```
