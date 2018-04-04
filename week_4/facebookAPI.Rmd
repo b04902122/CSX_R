@@ -1,0 +1,30 @@
+---
+title: "CSX_R homework 4"
+author: "Ymc"
+date: "2018/04/04"
+output: html_document
+---
+my site: https://b04902122.github.io/CSX_R/week_3/ggplot2.html
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## libraries
+
+```{r}
+library("Rfacebook")
+library("RCurl")
+library("tm")
+library("rjson")
+library("httr")
+```
+
+## get random facebook post's comments
+```{r}
+url <- "https://graph.facebook.com/v2.12/353815521771632/comments?access_token=EAACEdEose0cBABe81zAzppjKdF1Blxwr4l7sMsB1baz0zWs9pSgumZAfT9nsCDlJxm3ySrmQrjoZA8OT4kjeIhG5pnRDbFkfylqre6LguQHn9RFmuJxJTTrLP4PVr31ZCSvbkKuAvzkpLOToykjtIgslozyZAZA6kw8XTBtdzFneiQpkeFL1xAV0XBO6wRNtKfelToDE1sgZDZD&pretty=0&limit=25&after=WTI5dGJXVnVkRjlqZAFhKemIzSTZANelUwT0RFeU1Ua3hOamN4T1RZAMU9qRTFNakkxT0RrME5EZAz0ZD"
+d <- getURL(url)
+j <- fromJSON(d)
+comments <-sapply(j$data,function(j) {list(comment=j$message)})
+comments
+```
