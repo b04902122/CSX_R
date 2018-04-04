@@ -31,6 +31,7 @@ comments <-sapply(j$data,function(j) {list(comment=j$message)})
 comments
 ```
 ## get all words from comments
+### include sorting, remove punctuation & spacing, etc..
 ```{r}
 Cleanedcomments <- sapply(comments, function(x) iconv(enc2utf8(x), sub = "byte"))
 my_corpus <- Corpus(VectorSource(Cleanedcomments))
@@ -39,7 +40,7 @@ my_cleaned_corpus <- tm_map(my_corpus, my_function, "/")
 my_cleaned_corpus <- tm_map(my_cleaned_corpus, my_function, "@")
 my_cleaned_corpus <- tm_map(my_cleaned_corpus, my_function, "\\|")
 my_cleaned_corpus <- tm_map(my_cleaned_corpus, content_transformer(tolower))
-#my_cleaned_corpus <- tm_map(my_cleaned_corpus, removeWords, c(stopwords("english"), "batman","movie","superman"))
+my_cleaned_corpus <- tm_map(my_cleaned_corpus, removeWords, c(stopwords("english")))
 my_cleaned_corpus <- tm_map(my_cleaned_corpus, removePunctuation)
 my_cleaned_corpus <- tm_map(my_cleaned_corpus, stripWhitespace)
 
