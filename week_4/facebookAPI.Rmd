@@ -52,5 +52,5 @@ my_data
 ```
 ## word cloud
 ```{r}
-wordcloud(words = my_data$word, freq = my_data$freq, min.freq = 2, max.words = 100, random.order=FALSE, rot.per = 0.35, colors = brewer.pal(8, "Dark2"))
+wordcloud(words = my_data$word, freq = my_data$freq, min.freq = 2, max.words = 300, random.order=FALSE, rot.per = 0.35, colors = brewer.pal(8, "Dark2"))
 ```
