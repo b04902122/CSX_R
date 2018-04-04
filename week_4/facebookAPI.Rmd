@@ -24,7 +24,7 @@ library("wordcloud")
 ## get random facebook post's comments
 ### (Showed only 25 comments)
 ```{r}
-url <- "https://graph.facebook.com/v2.12/481716732028912/comments?access_token=EAACEdEose0cBABe81zAzppjKdF1Blxwr4l7sMsB1baz0zWs9pSgumZAfT9nsCDlJxm3ySrmQrjoZA8OT4kjeIhG5pnRDbFkfylqre6LguQHn9RFmuJxJTTrLP4PVr31ZCSvbkKuAvzkpLOToykjtIgslozyZAZA6kw8XTBtdzFneiQpkeFL1xAV0XBO6wRNtKfelToDE1sgZDZD&pretty=0&limit=25&after=NDU4NwZDZD"
+url <- "https://graph.facebook.com/v2.12/481716732028912/comments?access_token=EAACEdEose0cBAHHiGTsZCVUW4TgZAoXef1dGslM3ONasgyB4pHjprRCLeA06t9OlhZA66APWVPpu6ZCOZCLMUoCZAm2R5jZCkukyC2RwRPJ6WJ5BlBrZAXlE5XhjP1c6pWVIuKfADyCQ7HOYJ9waGED9gesyiI372VxExShZCpFTBfVWKsCSOEZBol1ijwT32OqRAZD&pretty=0&limit=25&after=NDU4NwZDZD"
 d <- getURL(url)
 j <- fromJSON(d)
 comments <-sapply(j$data,function(j) {list(comment=j$message)})
