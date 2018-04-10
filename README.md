@@ -34,3 +34,7 @@
 上網查找有關ggplot2的用法
 
 作業3完成
+
+
+# week 4
+https://b04902122.github.io/CSX_R/week_4/facebookAPI.html
