@@ -35,11 +35,19 @@ https://b04902122.github.io/CSX_R/week_2/myRcrawler.html
 
 上網查找有關ggplot2的用法
 
+嘗試使用各種ggplot2內建的功能，得到的效果也不一樣
+
 作業3完成
 
 https://b04902122.github.io/CSX_R/week_3/ggplot2.html  
 
 
 # week 4
+
+上網研究如何使用facebook graph developer
+
+學習如何從facebook的留言抓去所有的文字，並用R進行分析
+
+作業4完成
 
 https://b04902122.github.io/CSX_R/week_4/facebookAPI.html
