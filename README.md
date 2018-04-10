@@ -28,6 +28,8 @@
 
 作業2完成
 
+https://b04902122.github.io/CSX_R/week_2/myRcrawler.html  
+
 
 # week 3
 
@@ -35,6 +37,9 @@
 
 作業3完成
 
+https://b04902122.github.io/CSX_R/week_3/ggplot2.html  
+
 
 # week 4
+
 https://b04902122.github.io/CSX_R/week_4/facebookAPI.html
