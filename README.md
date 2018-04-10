@@ -55,4 +55,12 @@ https://b04902122.github.io/CSX_R/week_4/facebookAPI.html
 
 # week 5
 
+和禮拜四的好像差不多
+
+學習了TF-IDF
+
+學了一堆神奇的library內建功能
+
+作業5完成
+
 https://b04902122.github.io/CSX_R/week_5/tf.html
