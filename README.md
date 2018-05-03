@@ -64,3 +64,8 @@ https://b04902122.github.io/CSX_R/week_4/facebookAPI.html
 作業5完成
 
 https://b04902122.github.io/CSX_R/week_5/tf.html
+
+
+# project 2
+
+https://drive.google.com/open?id=1wGIW8a15XDn8i-CwbbcMYyxXwruBy6pS
