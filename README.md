@@ -69,3 +69,9 @@ https://b04902122.github.io/CSX_R/week_5/tf.html
 # project 2
 
 https://drive.google.com/open?id=1wGIW8a15XDn8i-CwbbcMYyxXwruBy6pS
+
+# project 3
+
+https://b04902122.github.io/CSX_R/project_3/titanic.html
+
+
