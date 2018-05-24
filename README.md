@@ -74,4 +74,4 @@ https://drive.google.com/open?id=1wGIW8a15XDn8i-CwbbcMYyxXwruBy6pS
 
 https://b04902122.github.io/CSX_R/project_3/titanic.html
 
-
+result: https://github.com/b04902122/CSX_R/blob/master/project_3/result.csv
