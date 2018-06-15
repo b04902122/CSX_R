@@ -53,7 +53,7 @@ https://b04902122.github.io/CSX_R/week_3/ggplot2.html
 https://b04902122.github.io/CSX_R/week_4/facebookAPI.html
 
 
-# week 5
+# week 5 & project 1
 
 和禮拜四的好像差不多
 
