@@ -78,6 +78,6 @@ https://b04902122.github.io/CSX_R/project_3/titanic.html
 result: https://github.com/b04902122/CSX_R/blob/master/project_3/result.csv
 
 
-# PROJECT 4
+# project 4
 
 https://b04902122.github.io/CSX_R/project_4/apriori.html
