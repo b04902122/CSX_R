@@ -70,8 +70,14 @@ https://b04902122.github.io/CSX_R/week_5/tf.html
 
 https://drive.google.com/open?id=1wGIW8a15XDn8i-CwbbcMYyxXwruBy6pS
 
+
 # project 3
 
 https://b04902122.github.io/CSX_R/project_3/titanic.html
 
 result: https://github.com/b04902122/CSX_R/blob/master/project_3/result.csv
+
+
+# PROJECT 4
+
+https://b04902122.github.io/CSX_R/project_4/apriori.html
