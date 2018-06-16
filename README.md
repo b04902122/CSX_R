@@ -81,3 +81,7 @@ result: https://github.com/b04902122/CSX_R/blob/master/project_3/result.csv
 # project 4
 
 https://b04902122.github.io/CSX_R/project_4/apriori.html
+
+# final project
+
+https://b04902122.github.io/CSX_R/final_project/final.html
