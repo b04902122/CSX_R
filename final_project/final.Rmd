@@ -1,88 +1,200 @@
 ---
-title: "CSX_R Project 3"
+title: "CSX_R Final Project"
 author: "Ymc"
-date: "2018/05/24"
+date: "2018/06/21"
 output: html_document
 ---
-my site: https://b04902122.github.io/CSX_R/project_3/titanic.html
+my site: https://b04902122.github.io/CSX_R/final_project/final.html
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Import libraries
-
 ```{r}
 library(dplyr)
 library(ggplot2)
 library(rpart)
 library(rpart.plot)
 library(ggpubr)
-ylb=matrix(c(0,0,0))
+library(Matrix)
+library(arules)
+library(arulesViz)
+library(rio)
+```
+
+## Initiate variables
+```{r}
 date16=array(0:0,c(31,12))
 date15=array(0:0,c(31,12))
 date14=array(0:0,c(31,12))
 topval=array(0:0,c(5,12))
 lowval=array(0:0,c(5,12))
-#date[1,1]=1
+```
 
-MyData16 <- read.csv(file="/Users/ymc/Desktop/R_final_proj/cleanData2016.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
-MyData15 <- read.csv(file="/Users/ymc/Desktop/R_final_proj/cleanData2015.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
-MyData14 <- read.csv(file="/Users/ymc/Desktop/R_final_proj/cleanData2014.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+## Load data
+```{r}
+MyData16 <- read.csv(file="/Users/Ymc/Desktop/r_final/cleanData2016.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+MyData15 <- read.csv(file="/Users/Ymc/Desktop/r_final/cleanData2015.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+MyData14 <- read.csv(file="/Users/Ymc/Desktop/r_final/cleanData2014.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+Veh16 <- read.csv(file="/Users/Ymc/Desktop/r_final/Veh16.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+Veh15 <- read.csv(file="/Users/Ymc/Desktop/r_final/Veh15.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+Veh14 <- read.csv(file="/Users/Ymc/Desktop/r_final/Veh14.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+```
 
+## Arrange data for visualization
+```{r}
+if (FALSE){
 for (i in 1:nrow(MyData16))
   date16[as.numeric(substr(MyData16$Date[i],9,10)),as.numeric(substr(MyData16$Date[i],6,7))] = date16[as.numeric(substr(MyData16$Date[i],9,10)),as.numeric(substr(MyData16$Date[i],6,7))] + 1
-  if(MyData16$Accident_Severity[i]=="fatal"){
-    ylb[1]=ylb[1]+1
-  } else if(MyData16$Accident_Severity[i]=="serious"){
-    ylb[2]=ylb[2]+1
-  } else{
-    ylb[3]=ylb[3]+1
-  }
-#fatal=1695,serious=21725,slight=113201 (2016)
+
 for (i in 1:nrow(MyData15))
   date15[as.numeric(substr(MyData15$Date[i],9,10)),as.numeric(substr(MyData15$Date[i],6,7))] = date15[as.numeric(substr(MyData15$Date[i],9,10)),as.numeric(substr(MyData15$Date[i],6,7))] + 1
-if(MyData15$Accident_Severity[i]=="fatal"){
-  ylb[1]=ylb[1]+1
-} else if(MyData15$Accident_Severity[i]=="serious"){
-  ylb[2]=ylb[2]+1
-} else{
-  ylb[3]=ylb[3]+1
-}
 
 for (i in 1:nrow(MyData14))
   date14[as.numeric(substr(MyData14$Date[i],9,10)),as.numeric(substr(MyData14$Date[i],6,7))] = date14[as.numeric(substr(MyData14$Date[i],9,10)),as.numeric(substr(MyData14$Date[i],6,7))] + 1
-if(MyData14$Accident_Severity[i]=="fatal"){
-  ylb[1]=ylb[1]+1
-} else if(MyData14$Accident_Severity[i]=="serious"){
-  ylb[2]=ylb[2]+1
-} else{
-  ylb[3]=ylb[3]+1
+
+for (i in 1:12)
+  topval[,i]=order(date16[,i], decreasing = TRUE)[1:5]
+for (i in 1:12)
+  lowval[,i]=order(date16[,i], decreasing = FALSE)[1:5]
 }
 
 datetable16 <- setNames(data.frame(table(MyData16$Date)),c("Date","Count"))
 datetable15 <- setNames(data.frame(table(MyData15$Date)),c("Date","Count"))
 datetable14 <- setNames(data.frame(table(MyData14$Date)),c("Date","Count"))
 
-for (i in 1:12)
-  topval[,i]=order(date16[,i], decreasing = TRUE)[1:5]
-for (i in 1:12)
-  lowval[,i]=order(date16[,i], decreasing = FALSE)[1:5]
+VehNum16 <- setNames(data.frame(table(Veh16$Sex_of_Driver)),c("Sex","count"))
+VehNum15 <- setNames(data.frame(table(Veh15$Sex_of_Driver)),c("Sex","count"))
+VehNum14 <- setNames(data.frame(table(Veh14$Sex_of_Driver)),c("Sex","count"))
 
-ggplot(MyData16, aes(x = Accident_Severity, fill = Accident_Severity)) +
-  geom_bar() +   # this tells R you want a bar chart
-  theme_light() +   # this adds a theme
-  labs(x = "Accident Severity",   # this labels the x axis
-       y = "Count",   # this labels the y axis
-       title = "") # title of the plot
+weat16=data.frame(ncol=1)
+names(weat16)<-c("weather")
+for (i in 1:nrow(MyData16))
+  if(MyData16$Accident_Severity[i]!="slight"){
+    if(MyData16$Weather_Conditions[i]>0){
+      tempd<-as.character(MyData16$Weather_Conditions[i])
+      temp<-data.frame(tempd)
+      names(temp)<-c("weather")
+      weat16<-rbind(weat16,temp)
+    }
+  }
+weat15=data.frame(ncol=1)
+names(weat15)<-c("weather")
+for (i in 1:nrow(MyData15))
+  if(MyData15$Accident_Severity[i]!="slight"){
+    if(MyData15$Weather_Conditions[i]>0){
+      tempd<-as.character(MyData15$Weather_Conditions[i])
+      temp<-data.frame(tempd)
+      names(temp)<-c("weather")
+      weat15<-rbind(weat15,temp)
+    }
+  }
+weat14=data.frame(ncol=1)
+names(weat14)<-c("weather")
+for (i in 1:nrow(MyData14))
+  if(MyData14$Accident_Severity[i]!="slight"){
+    if(MyData14$Weather_Conditions[i]>0){
+      tempd<-as.character(MyData14$Weather_Conditions[i])
+      temp<-data.frame(tempd)
+      names(temp)<-c("weather")
+      weat14<-rbind(weat14,temp)
+    }
+  }
+```
 
-ggplot(MyData16, aes(x = Date, fill = Date)) +
-  geom_bar() +   # this tells R you want a bar chart
-  theme_light() +   # this adds a theme
-  labs(x = "Accident Severity",   # this labels the x axis
-       y = "Count",   # this labels the y axis
-       title = "") # title of the plot
+## Pie-chart for severity per year
+```{r}
+bp16 <- ggplot(MyData16, aes(x = Accident_Severity, fill = Accident_Severity)) +
+  geom_bar() +
+  theme_light() +
+  labs(x = "Accident Severity", y = "Count", title ="2016") 
+pie16 <- bp16 + coord_polar("y")
+bp15 <- ggplot(MyData15, aes(x = Accident_Severity, fill = Accident_Severity)) +
+  geom_bar() +
+  theme_light() +
+  labs(x = "Accident Severity", y = "Count", title = "2015")
+pie15 <- bp15 + coord_polar("y")
+bp14 <- ggplot(MyData14, aes(x = Accident_Severity, fill = Accident_Severity)) +
+  geom_bar() +
+  theme_light() +
+  labs(x = "Accident Severity", y = "Count", title = "2014") 
+pie14 <- bp14 + coord_polar("y")
+ggarrange(pie16, pie15, pie14, nrow = 2, ncol = 2)
+```
 
+## Bar-chart for sex per year
+```{r}
+Veh16$Sex_of_Driver <- factor(Veh16$Sex_of_Driver, 
+                         levels=c("male","female","other"))
+Vbar16<-ggplot(Veh16, aes(x = Sex_of_Driver))+
+  geom_bar(aes(fill = Sex_of_Driver, color = Sex_of_Driver))+
+  theme(legend.position = "none")+
+  labs(x = "male = 90240        female = 36890        other = 9456",y = "2016")
+Veh15$Sex_of_Driver <- factor(Veh15$Sex_of_Driver, 
+                              levels=c("male","female","other"))
+Vbar15<-ggplot(Veh15, aes(x = Sex_of_Driver))+
+  geom_bar(aes(fill = Sex_of_Driver, color = Sex_of_Driver))+
+  theme(legend.position = "none")+
+  labs(x = "male = 93288        female = 38237        other = 8501",y = "2015")
+val<-c("1","2","3")
+Veh14$Sex_of_Driver <- factor(Veh14$Sex_of_Driver, 
+                             levels=c("male","female","other"))
+Vbar14<-ggplot(Veh14, aes(x = Sex_of_Driver))+
+  geom_bar(aes(fill = Sex_of_Driver, color = Sex_of_Driver))+
+  theme(legend.position = "none")+
+  labs(x = "male = 96812        female = 41073        other = 8426",y = "2014")
+ggarrange(Vbar16, Vbar15, Vbar14, nrow = 3)
+```
+
+## Bar-chart for weather & ftl/srs severity
+```{r}
+weat16$weather <- factor(weat16$weather, 
+  levels=c("Fine","Rain","Snow","Fine+hw","Rain+hw","Snow+hw","Fog/Mist","Other","Unkn"))
+weat16<-weat16[-c(1), ,drop=FALSE]
+wbar16<-ggplot(weat16, aes(x = weather))+
+  geom_bar(aes(fill = weather, color = weather))+
+  labs(x="2016", y="count")+
+  theme(legend.position = "none", axis.text.x = element_text(angle = 30, hjust = 1))
+weat15$weather <- factor(weat15$weather, 
+  levels=c("Fine","Rain","Snow","Fine+hw","Rain+hw","Snow+hw","Fog/Mist","Other","Unkn"))
+weat15<-weat15[-c(1), ,drop=FALSE]
+wbar15<-ggplot(weat15, aes(x = weather))+
+  geom_bar(aes(fill = weather, color = weather))+
+  labs(x="2015", y="count")+
+  theme(legend.position = "none", axis.text.x = element_text(angle = 30, hjust = 1))
+weat14$weather <- factor(weat14$weather, 
+  levels=c("Fine","Rain","Snow","Fine+hw","Rain+hw","Snow+hw","Fog/Mist","Other","Unkn"))
+weat14<-weat14[-c(1), ,drop=FALSE]
+wbar14<-ggplot(weat14, aes(x = weather))+
+  geom_bar(aes(fill = weather, color = weather))+
+  labs(x="2014", y="count")+
+  theme(legend.position = "none", axis.text.x = element_text(angle = 30, hjust = 1))
+ggarrange(wbar16, wbar15, wbar14, nrow = 3)
+```
+
+## Bar-chart for total accident for all weeks
+```{r}
+MyData16$Day_of_Week <- factor(MyData16$Day_of_Week, levels=c("Sun","Mon","Tue","Wed","Thu","Fri","Sat"))
+week16 <- ggplot(MyData16, aes(x = Day_of_Week))+
+  geom_bar(aes(fill = Day_of_Week, color=Day_of_Week))+theme_minimal()+
+  labs(x="2016", y="count")
+week16 <- week16 + theme(legend.position = "none")
+MyData15$Day_of_Week <- factor(MyData15$Day_of_Week, levels=c("Sun","Mon","Tue","Wed","Thu","Fri","Sat"))
+week15 <- ggplot(MyData15, aes(x = Day_of_Week))+
+  geom_bar(aes(fill = Day_of_Week, color=Day_of_Week))+theme_minimal()+
+  labs(x="2015", y="count")
+week15 <- week15 + theme(legend.position = "none")
+MyData14$Day_of_Week <- factor(MyData14$Day_of_Week, levels=c("Sun","Mon","Tue","Wed","Thu","Fri","Sat"))
+week14 <- ggplot(MyData14, aes(x = Day_of_Week))+
+  geom_bar(aes(fill = Day_of_Week, color=Day_of_Week))+theme_minimal()+
+  labs(x="2014", y="count")
+week14 <- week14 + theme(legend.position = "none")
+ggarrange(week16, week15, week14, nrow = 3)
+```
+
+## Line-chart for total accident per month
+```{r}
 newdt <- datetable16[1:31,]
 jan16 <- ggplot(data=newdt, aes(x=Date, y=Count, group=1))+
   geom_line(linetype="dashed", color = "blue")+
@@ -358,4 +470,236 @@ dec14 <- ggplot(data=newdt, aes(x=Date, y=Count, group=1)) +
   labs(x = "December")+
   geom_hline(yintercept = mean(newdt$Count), color="gold2")
 ggarrange(dec16, dec15, dec14, nrow = 3)
+```
+
+## Apriori for All
+```{r}
+Aprio_all <- read.delim("/Users/Ymc/Desktop/alldata1.txt")
+
+tf_all = Aprio_all[,c(1,3:5)]
+rule_all <- apriori(
+  tf_all,
+  parameter = list(minlen=3, supp=0.05, conf=0.9),
+  #appearance = list(default="lhs",
+    #rhs=c("Accident_Severity=slight","Accident_Severity=serious","Accident_Severity=fatal")
+  #)
+)
+sort(rule_all, by="lift")
+inspect(rule_all)
+sort.rule_all <- sort(rule_all, by="support")
+plot(sort.rule_all)
+plot(sort.rule_all, method="graph")
+```
+
+## Apriori for Fatal
+```{r}
+Aprio_ftl <- read.delim("/Users/Ymc/Desktop/data_ftl.txt")
+
+tf_ftl = Aprio_ftl[,c(3:5)]
+rule_ftl <- apriori(
+  tf_ftl,
+  parameter = list(minlen=3, supp=0.05, conf=0.5),
+  #appearance = list(default="lhs",
+    #rhs=c("Accident_Severity=slight","Accident_Severity=serious","Accident_Severity=fatal")
+  #)
+)
+sort(rule_ftl, by="lift")
+inspect(rule_ftl)
+sort.rule_ftl <- sort(rule_ftl, by="support")
+plot(sort.rule_ftl)
+plot(sort.rule_ftl, method="graph")
+```
+
+## Apriori for Serious
+```{r}
+Aprio_srs <- read.delim("/Users/Ymc/Desktop/r_final/apriori16_srs.txt")
+
+tf_srs = Aprio_srs[,c(1,3:5)]
+rule_srs <- apriori(
+  tf_srs,
+  parameter = list(minlen=3, supp=0.1, conf=0.9),
+  #appearance = list(default="lhs",
+    #rhs=c("Accident_Severity=slight","Accident_Severity=serious","Accident_Severity=fatal")
+  #)
+)
+sort(rule_srs, by="lift")
+inspect(rule_srs)
+sort.rule_srs <- sort(rule_srs, by="support")
+plot(sort.rule_srs)
+plot(sort.rule_srs, method="graph")
+```
+
+## Apriori for Rain
+```{r}
+Aprio_rain <- read.delim("/Users/Ymc/Desktop/data_rain.txt")
+
+tf_rain = Aprio_rain[,c(1,3:5)]
+rule_rain <- apriori(
+  tf_rain,
+  parameter = list(minlen=3, supp=0.1, conf=0.9),
+  #appearance = list(default="lhs",
+    #rhs=c("Accident_Severity=slight","Accident_Severity=serious","Accident_Severity=fatal")
+  #)
+)
+sort(rule_rain, by="lift")
+inspect(rule_rain)
+sort.rule_rain <- sort(rule_rain, by="support")
+plot(sort.rule_rain)
+plot(sort.rule_rain, method="graph")
+```
+
+## Apriori for Night
+```{r}
+Aprio_nit <- read.delim("/Users/Ymc/Desktop/data_nit.txt")
+
+tf_nit = Aprio_nit[,c(1,3:5)]
+rule_nit <- apriori(
+  tf_nit,
+  parameter = list(minlen=3, supp=0.05, conf=0.9),
+  #appearance = list(default="lhs",
+    #rhs=c("Accident_Severity=slight","Accident_Severity=serious","Accident_Severity=fatal")
+  #)
+)
+sort(rule_nit, by="lift")
+inspect(rule_nit)
+sort.rule_nit <- sort(rule_nit, by="support")
+plot(sort.rule_nit)
+plot(sort.rule_nit, method="graph")
+```
+
+## Line-chart for Time
+```{r}
+stime<-0
+rstime<-"0"
+cnt<-1
+MyData <- read.csv(file="/Users/Ymc/Desktop/r_final/cleanData2016.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+for(i in 1:nrow(MyData))
+  if(nchar(MyData$Time[i])==4){
+    MyData$Time[i]<-paste0("0", MyData$Time[i])
+  }
+timetable <- setNames(data.frame(table(MyData$Time)),c("Time","Count"))
+timetable <- timetable[-c(1), ,drop=FALSE]
+data_time=data.frame(a="00:00-00:59",b=0)
+names(data_time)<-c("Time","Count")
+for (i in 1:9){
+  stime<-stime+1
+  strtime=paste0("0",as.character(stime),":00-0",as.character(stime),":59")
+  tempd=data.frame(Time=strtime,Count=0)
+  data_time<-rbind(data_time,tempd)
+}
+for (i in 1:14){
+  stime<-stime+1
+  strtime=paste0(as.character(stime),":00-",as.character(stime),":59")
+  tempd=data.frame(Time=strtime,Count=0)
+  data_time<-rbind(data_time,tempd)
+}
+stime<-0
+for (i in 1:nrow(timetable)){
+  if(substr(timetable$Time[i],2,2)==":"){
+    checktime<-as.numeric(substr(timetable$Time[i],1,1))
+  }else{
+    checktime<-as.numeric(substr(timetable$Time[i],1,2))
+  }
+  if(checktime==stime){
+    data_time$Count[cnt]<-data_time$Count[cnt]+timetable[i,2]
+  }else{
+    cnt<-cnt+1
+    stime<-stime+1
+  }
+}
+time16<-ggplot(data=data_time, aes(x=Time, y=Count, group=1)) +
+  geom_line(linetype="dashed", color = "blue")+
+  geom_point(color = "red")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  labs(x="Time 16")
+
+stime<-0
+rstime<-"0"
+cnt<-1
+MyData <- read.csv(file="/Users/Ymc/Desktop/r_final/cleanData2015.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+for(i in 1:nrow(MyData))
+  if(nchar(MyData$Time[i])==4){
+    MyData$Time[i]<-paste0("0", MyData$Time[i])
+  }
+timetable <- setNames(data.frame(table(MyData$Time)),c("Time","Count"))
+timetable <- timetable[-c(1), ,drop=FALSE]
+data_time=data.frame(a="00:00-00:59",b=0)
+names(data_time)<-c("Time","Count")
+for (i in 1:9){
+  stime<-stime+1
+  strtime=paste0("0",as.character(stime),":00-0",as.character(stime),":59")
+  tempd=data.frame(Time=strtime,Count=0)
+  data_time<-rbind(data_time,tempd)
+}
+for (i in 1:14){
+  stime<-stime+1
+  strtime=paste0(as.character(stime),":00-",as.character(stime),":59")
+  tempd=data.frame(Time=strtime,Count=0)
+  data_time<-rbind(data_time,tempd)
+}
+stime<-0
+for (i in 1:nrow(timetable)){
+  if(substr(timetable$Time[i],2,2)==":"){
+    checktime<-as.numeric(substr(timetable$Time[i],1,1))
+  }else{
+    checktime<-as.numeric(substr(timetable$Time[i],1,2))
+  }
+  if(checktime==stime){
+    data_time$Count[cnt]<-data_time$Count[cnt]+timetable[i,2]
+  }else{
+    cnt<-cnt+1
+    stime<-stime+1
+  }
+}
+time15<-ggplot(data=data_time, aes(x=Time, y=Count, group=1)) +
+  geom_line(linetype="dashed", color = "blue")+
+  geom_point(color = "red")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  labs(x="Time 15")
+
+stime<-0
+rstime<-"0"
+cnt<-1
+MyData <- read.csv(file="/Users/Ymc/Desktop/r_final/cleanData2014.csv", header=TRUE, sep=",", stringsAsFactors = FALSE)
+for(i in 1:nrow(MyData))
+  if(nchar(MyData$Time[i])==4){
+    MyData$Time[i]<-paste0("0", MyData$Time[i])
+  }
+timetable <- setNames(data.frame(table(MyData$Time)),c("Time","Count"))
+timetable <- timetable[-c(1), ,drop=FALSE]
+data_time=data.frame(a="00:00-00:59",b=0)
+names(data_time)<-c("Time","Count")
+for (i in 1:9){
+  stime<-stime+1
+  strtime=paste0("0",as.character(stime),":00-0",as.character(stime),":59")
+  tempd=data.frame(Time=strtime,Count=0)
+  data_time<-rbind(data_time,tempd)
+}
+for (i in 1:14){
+  stime<-stime+1
+  strtime=paste0(as.character(stime),":00-",as.character(stime),":59")
+  tempd=data.frame(Time=strtime,Count=0)
+  data_time<-rbind(data_time,tempd)
+}
+stime<-0
+for (i in 1:nrow(timetable)){
+  if(substr(timetable$Time[i],2,2)==":"){
+    checktime<-as.numeric(substr(timetable$Time[i],1,1))
+  }else{
+    checktime<-as.numeric(substr(timetable$Time[i],1,2))
+  }
+  if(checktime==stime){
+    data_time$Count[cnt]<-data_time$Count[cnt]+timetable[i,2]
+  }else{
+    cnt<-cnt+1
+    stime<-stime+1
+  }
+}
+time14<-ggplot(data=data_time, aes(x=Time, y=Count, group=1)) +
+  geom_line(linetype="dashed", color = "blue")+
+  geom_point(color = "red")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  labs(x="Time 14")
+
+ggarrange(time16,time15,time14,nrow=3)
 ```
